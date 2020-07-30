@@ -314,3 +314,6 @@ for (let i = 0; i < extraFilmElements.length; i++) {
     render(extraContainer, createFilmCardTemplate(), `beforeend`);
   }
 }
+
+createFilmPopupTemplate();
+createCommentsTemplate();

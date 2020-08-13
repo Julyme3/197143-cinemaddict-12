@@ -1,14 +1,29 @@
-import {generateFilter} from "../mock/filter";
-import {createFilterTemplate} from "./filter";
+import {createElement} from "../utils";
 
-const createMenuTemplate = (filmCards) => {
-  const filters = generateFilter(filmCards);
-  const filterTemplate = createFilterTemplate(filters);
-  return `<nav class="main-navigation">
-      ${filterTemplate}
-      <a href="#stats" class="main-navigation__additional">Stats</a>
-    </nav>`
-  ;
-};
+export default class Menu {
+  constructor() {
+    this._element = null;
+  }
 
-export {createMenuTemplate};
+  createTemplate() {
+    return `<nav class="main-navigation">
+        <a href="#stats" class="main-navigation__additional">Stats</a>
+      </nav>`
+    ;
+  }
+
+  getTemplate() {
+    return this.createTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,18 +1,12 @@
 import {createElement} from "../utils";
 
-export default class FilmContainer {
-
+export default class FilmList {
   constructor() {
     this._element = null;
   }
 
   createTemplate() {
-    return `<section class="films">
-        <section class="films-list">
-          <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
-        </section>
-      </section>`
-    ;
+    return `<div class="films-list__container"></div>`;
   }
 
   getTemplate() {
@@ -29,4 +23,5 @@ export default class FilmContainer {
   removeElement() {
     this._element = null;
   }
+
 }

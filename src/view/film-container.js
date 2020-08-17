@@ -1,10 +1,6 @@
-import {createElement} from "../utils";
+import AbstractView from "./abstract";
 
-export default class FilmContainer {
-
-  constructor() {
-    this._element = null;
-  }
+export default class FilmContainer extends AbstractView {
 
   createTemplate() {
     return `<section class="films">
@@ -17,16 +13,5 @@ export default class FilmContainer {
 
   getTemplate() {
     return this.createTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

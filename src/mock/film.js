@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandom, getRandomItemFromList, generateRandomList} from "../utils";
+import {getRandomInteger, getRandom, getRandomItemFromList, generateRandomList} from "../utils/common";
 
 const MIN_LENGTH_DESCRIPTION = 1;
 const MAX_LENGTH_DESCRIPTION = 5;

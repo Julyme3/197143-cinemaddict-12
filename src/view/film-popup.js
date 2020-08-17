@@ -1,11 +1,12 @@
-import {createElement} from "../utils";
+import AbstractView from "./abstract";
 import {generateComment} from "../mock/comment";
 import CommentsView from "./comments";
 
-export default class FilmPopup {
+export default class FilmPopup extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
+    this._closePopupHandler = this._closePopupHandler.bind(this);
   }
 
   createGenresTemplate(genres) {
@@ -138,15 +139,17 @@ export default class FilmPopup {
     return this.createFilmPopupTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _closePopupHandler(evt) {
+    evt.preventDefault();
+    this._callback.closePopup();
   }
 
-  removeElement() {
-    this._element = null;
+  setClosePopupHandler(callback) {
+    this._callback.closePopup = callback;
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._closePopupHandler);
   }
 
+  removeClosePopupHandler() {
+    this.getElement().querySelector(`.film-details__close-btn`).removeEventListener(`click`, this._callback.closePopup);
+  }
 }

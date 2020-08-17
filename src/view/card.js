@@ -1,9 +1,10 @@
-import {createElement} from "../utils";
+import AbstractView from "./abstract";
 
-export default class FilmCard {
+export default class FilmCard extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
+    this._openPopupHandler = this._openPopupHandler.bind(this);
   }
 
   createTemplate(film) {
@@ -44,14 +45,13 @@ export default class FilmCard {
     return this.createTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _openPopupHandler(evt) {
+    evt.preventDefault();
+    this._callback.openPopup(evt);
   }
 
-  removeElement() {
-    this._element = null;
+  setOpenPopupHandler(callback) {
+    this._callback.openPopup = callback;
+    this.getElement().addEventListener(`click`, this._openPopupHandler);
   }
 }

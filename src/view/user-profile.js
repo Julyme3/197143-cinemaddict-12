@@ -1,9 +1,9 @@
-import {createElement} from "../utils";
+import AbstractView from "./abstract";
 
-export default class UserProfile {
+export default class UserProfile extends AbstractView {
   constructor(user) {
+    super();
     this._user = user;
-    this._element = null;
   }
 
   createTemplate(user) {
@@ -22,16 +22,5 @@ export default class UserProfile {
 
   getTemplate() {
     return this.createTemplate(this._user);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

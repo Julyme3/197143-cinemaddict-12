@@ -1,9 +1,10 @@
-import {createElement} from "../utils";
+import AbstractView from "./abstract";
 
-export default class LoadMoreBtn {
+export default class LoadMoreBtn extends AbstractView {
 
   constructor() {
-    this._element = null;
+    super();
+    this._btnClickHandler = this._btnClickHandler.bind(this);
   }
 
   createTemplate() {
@@ -14,14 +15,17 @@ export default class LoadMoreBtn {
     return this.createTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
+  _btnClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.btnClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setBtnClickHandler(callback) {
+    this._callback.btnClick = callback;
+    this.getElement().addEventListener(`click`, this._btnClickHandler);
+  }
+
+  removeBtnClickHandler() {
+    this.getElement().removeEventListener(`click`, this._callback.btnClick);
   }
 }

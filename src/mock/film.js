@@ -1,4 +1,5 @@
 import {getRandomInteger, getRandom, getRandomItemFromList, generateRandomList} from "../utils/common";
+import {getRandomDate} from "../utils/film";
 
 const MIN_LENGTH_DESCRIPTION = 1;
 const MAX_LENGTH_DESCRIPTION = 5;
@@ -34,7 +35,6 @@ const yearsProduction = [
 
 const countries = [`USA`, `France`, `England`, `Italy`];
 
-const yearsRelease = [`20 February 1924`, `01 April 1995`, `04 January 1967`, `13 August 1936`, `15 May 1932`];
 
 const genres = [`Comedy`, `Musical`, `Western`, `Cartoon`, `Drama`];
 
@@ -93,7 +93,7 @@ const generateFilmCard = () => {
     director: getRandomItemFromList(authorNames),
     writers: generateRandomList(1, 3, authorNames).join(`, `),
     actors: generateRandomList(1, 3, authorNames).join(`, `),
-    release: getRandomItemFromList(yearsRelease),
+    release: getRandomDate(),
     country: getRandomItemFromList(countries),
     ageRaiting: getRandomItemFromList(agesRaiting),
     comments: getRandomInteger(0, 4),

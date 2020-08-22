@@ -43,4 +43,6 @@ const generateRandomList = (minlength, maxLength, fullList) => {
   return list;
 };
 
-export {getRandomInteger, getRandom, getRandomItemFromList, formattedDateTime, generateRandomList};
+const formattedDate = (date, options) => date.toLocaleString(`en-US`, {day: options.days, month: options.month, year: options.year});
+
+export {getRandomInteger, getRandom, getRandomItemFromList, formattedDateTime, generateRandomList, formattedDate};

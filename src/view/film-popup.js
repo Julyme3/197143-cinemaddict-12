@@ -1,3 +1,4 @@
+import {formattedDate} from "../utils/common";
 import AbstractView from "./abstract";
 import {generateComment} from "../mock/comment";
 import CommentsView from "./comments";
@@ -58,7 +59,7 @@ export default class FilmPopup extends AbstractView {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${release}</td>
+                <td class="film-details__cell">${formattedDate(release, {days: `numeric`, month: `long`, year: `numeric`})}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>

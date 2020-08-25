@@ -1,13 +1,16 @@
 import {formattedDate} from "../utils/common";
-import AbstractView from "./abstract";
+import SmartView from "./smart";
 import {generateComment} from "../mock/comment";
 import CommentsView from "./comments";
 
-export default class FilmPopup extends AbstractView {
+export default class FilmPopup extends SmartView {
   constructor(film) {
     super();
     this._film = film;
     this._closePopupHandler = this._closePopupHandler.bind(this);
+    this._addToWatchlistClickHandler = this._addToWatchlistClickHandler.bind(this);
+    this._addToWatchedClickHandler = this._addToWatchedClickHandler.bind(this);
+    this._addToFavoritesClickHandler = this._addToFavoritesClickHandler.bind(this);
   }
 
   createGenresTemplate(genres) {
@@ -145,9 +148,39 @@ export default class FilmPopup extends AbstractView {
     this._callback.closePopup();
   }
 
+  _addToWatchlistClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.addToWatchlistClick();
+  }
+
+  _addToWatchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.addToWatchedlistClick();
+  }
+
+  _addToFavoritesClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.addToFavoritesClick();
+  }
+
   setClosePopupHandler(callback) {
     this._callback.closePopup = callback;
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._closePopupHandler);
+  }
+
+  setAddToWatchlistClickHandler(callback) {
+    this._callback.addToWatchlistClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, this._addToWatchlistClickHandler);
+  }
+
+  setAddToWatchedClickHandler(callback) {
+    this._callback.addToWatchedlistClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, this._addToWatchedClickHandler);
+  }
+
+  setAddToFavoritesClickHandler(callback) {
+    this._callback.addToFavoritesClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._addToFavoritesClickHandler);
   }
 
   removeClosePopupHandler() {

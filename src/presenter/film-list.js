@@ -1,13 +1,17 @@
 import {render, removeChild, appendChild, remove} from "../utils/render";
+import {sortByDateDown, sortByRatingDown} from "../utils/film";
+import {SortTypes} from "../const";
 import FilmContainerView from "../view/film-container";
 import NoFilmView from "../view/no-film";
 import FilmCardView from "../view/card";
 import FilmPopupView from "../view/film-popup";
 import LoadMoreBtnView from "../view/load-more-btn";
+import SortView from "../view/sort";
 import FilmListView from "../view/film-list";
 import ExtraFilmContainerView from "../view/extra-film";
 
 const body = document.querySelector(`body`);
+const mainElement = body.querySelector(`.main`);
 const FILM_COUNT_GAP = 5;
 const EXTRA_FILM_CARD_COUNT = 2;
 
@@ -18,16 +22,22 @@ export default class FilmList {
     this._noFilmComponent = new NoFilmView();
     this._loadMoreBtnComponent = new LoadMoreBtnView();
     this._filmListComponent = new FilmListView();
+    this._sortComponent = new SortView();
+
+    this._currentSortType = SortTypes.DEFAULT;
 
     this._filmListElement = this._filmListInnerContainerComponent.getElement().querySelector(`.films-list`);
     this._renderedCardsCount = FILM_COUNT_GAP;
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(films) {
     this._films = films;
+    this._renderSort();
     render(this._filmListContainer, this._filmListInnerContainerComponent, `beforeend`);
-    this._renderFilmList(films);
+    this._renderBoard();
+    this._sourcedFilms = this._films.slice(); // храним исходную копию массива с фильмами
   }
 
   _renderFilmCard(container, film) {
@@ -75,10 +85,28 @@ export default class FilmList {
     filmCardComponent.setOpenPopupHandler(openPopupHandler);
   }
 
-  _renderFilmCards(from, to, container = this._filmListComponent) {
-    this._films
-    .slice(from, to)
-    .forEach((film) => this._renderFilmCard(container, film));
+  _filmsSort(sortType) {
+    switch (sortType) {
+      case SortTypes.DATE:
+        this._films.sort(sortByDateDown);
+        break;
+      case SortTypes.RATING:
+        this._films.sort(sortByRatingDown);
+        break;
+      default:
+        this._films = this._sourcedFilms.slice();
+        break;
+    }
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (sortType === this._currentSortType) {
+      return;
+    }
+    this._filmsSort(sortType);
+    this._clearFilmList();
+    this._renderFilmList();
   }
 
   _handleLoadMoreButtonClick() {
@@ -89,6 +117,18 @@ export default class FilmList {
       this._loadMoreBtnComponent.removeBtnClickHandler();
       remove(this._loadMoreBtnComponent);
     }
+  }
+
+  _renderFilmCards(from, to, container = this._filmListComponent) {
+    this._films
+    .slice(from, to)
+    .forEach((film) => this._renderFilmCard(container, film));
+  }
+
+  _renderSort() {
+    render(mainElement, this._sortComponent, `beforeend`);
+
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderLoadMoreBtn() {
@@ -104,20 +144,31 @@ export default class FilmList {
     this._renderFilmCards(0, EXTRA_FILM_CARD_COUNT, extraFilmList);
   }
 
-  _renderFilmList(films) {
-    if (!films.length) {
+  _renderFilmList() { // только основная часть списка фильмов (без экстра блока)
+    render(this._filmListElement, this._filmListComponent, `beforeend`);
+    this._renderFilmCards(0, Math.min(FILM_COUNT_GAP, this._films.length));
+
+    if (this._films.length > FILM_COUNT_GAP) {
+      this._renderLoadMoreBtn();
+    }
+
+  }
+
+  _renderBoard() {
+    if (!this._films.length) {
       this._filmListElement.innerHTML = this._noFilmComponent.getTemplate();
       return;
     }
 
-    render(this._filmListElement, this._filmListComponent, `beforeend`);
-    this._renderFilmCards(0, Math.min(FILM_COUNT_GAP, this._films.length));
-
-    if (films.length > FILM_COUNT_GAP) {
-      this._renderLoadMoreBtn();
-    }
+    this._renderFilmList();
 
     this._renderExtraFilms(new ExtraFilmContainerView());
     this._renderExtraFilms(new ExtraFilmContainerView());
   }
+
+  _clearFilmList() {
+    this._filmListComponent.getElement().innerHTML = ``;
+    this._renderedCardsCount = FILM_COUNT_GAP;
+  }
+
 }

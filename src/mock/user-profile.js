@@ -1,7 +1,7 @@
-import {RANK_FROM_WATCH_COUNT} from "../const";
+import {RankFromWatchCount} from "../const";
 
 const generateUserProfile = (watchedCount) => {
-  const {NOVICE, FAN, MOVIE_BUFF} = RANK_FROM_WATCH_COUNT;
+  const {NOVICE, FAN, MOVIE_BUFF} = RankFromWatchCount;
   let userRank = ``;
   if (watchedCount && watchedCount >= NOVICE) {
     userRank = `novice`;

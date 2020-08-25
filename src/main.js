@@ -5,7 +5,6 @@ import {generateFilter} from "./mock/filter";
 import UserProfileView from "./view/user-profile";
 import MenuView from "./view/menu";
 import FilterView from "./view/filter";
-import SortView from "./view/sort";
 import FilmListPresenter from "./presenter/film-list.js";
 
 const FILM_CARD_COUNT = 20;
@@ -22,7 +21,6 @@ render(headerElement, new UserProfileView(userProfile), `beforeend`);
 const menuComponent = new MenuView();
 render(mainElement, menuComponent, `afterbegin`);
 render(menuComponent, new FilterView(filters), `afterbegin`);
-render(mainElement, new SortView(), `beforeend`);
 
 const filmListPresenter = new FilmListPresenter(mainElement);
 filmListPresenter.init(films);

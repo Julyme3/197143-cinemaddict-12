@@ -1,8 +1,12 @@
 const EMOJI = [`smile`, `sleeping`, `puke`, `angry`];
-const RANK_FROM_WATCH_COUNT = {
+const RankFromWatchCount = {
   NOVICE: 10,
   FAN: 20,
   MOVIE_BUFF: 21,
 };
-
-export {EMOJI, RANK_FROM_WATCH_COUNT};
+const SortTypes = {
+  DEFAULT: `default`,
+  DATE: `date`,
+  RATING: `rating`,
+};
+export {EMOJI, RankFromWatchCount, SortTypes};

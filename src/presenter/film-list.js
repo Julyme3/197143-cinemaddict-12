@@ -1,14 +1,13 @@
-import {render, removeChild, appendChild, remove} from "../utils/render";
-import {sortByDateDown, sortByRatingDown} from "../utils/film";
+import {render, remove} from "../utils/render";
+import {sortByDateDown, sortByRatingDown, updateItem} from "../utils/film";
 import {SortTypes} from "../const";
 import FilmContainerView from "../view/film-container";
 import NoFilmView from "../view/no-film";
-import FilmCardView from "../view/card";
-import FilmPopupView from "../view/film-popup";
 import LoadMoreBtnView from "../view/load-more-btn";
 import SortView from "../view/sort";
 import FilmListView from "../view/film-list";
-import ExtraFilmContainerView from "../view/extra-film";
+// import ExtraFilmContainerView from "../view/extra-film";
+import FilmPresenter from "../presenter/film";
 
 const body = document.querySelector(`body`);
 const mainElement = body.querySelector(`.main`);
@@ -25,11 +24,14 @@ export default class FilmList {
     this._sortComponent = new SortView();
 
     this._currentSortType = SortTypes.DEFAULT;
+    this._filmPresenter = {};
 
     this._filmListElement = this._filmListInnerContainerComponent.getElement().querySelector(`.films-list`);
     this._renderedCardsCount = FILM_COUNT_GAP;
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._handleFilmChange = this._handleFilmChange.bind(this);
+    this._handleChangeModeFilm = this._handleChangeModeFilm.bind(this);
   }
 
   init(films) {
@@ -41,48 +43,10 @@ export default class FilmList {
   }
 
   _renderFilmCard(container, film) {
-    const filmCardComponent = new FilmCardView(film);
-    const filmPopupComponent = new FilmPopupView(film);
+    const filmPresenter = new FilmPresenter(container, this._handleFilmChange, this._handleChangeModeFilm);
+    filmPresenter.init(film);
 
-    render(container, filmCardComponent, `beforeend`);
-
-    const closePopup = () => {
-      removeChild(filmPopupComponent);
-    };
-
-    const openPopup = () => {
-      appendChild(body, filmPopupComponent);
-    };
-
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        evt.preventDefault();
-        closePopup();
-        document.removeEventListener(`keydown`, escKeyDownHandler);
-        filmPopupComponent.removeClosePopupHandler();
-      }
-    };
-
-    const closePopupHandler = () => {
-      closePopup();
-      filmPopupComponent.removeClosePopupHandler();
-      document.removeEventListener(`keydown`, escKeyDownHandler);
-    };
-
-    const openPopupHandler = (evt) => {
-      if (evt.target.className !== `film-card__poster`
-      && evt.target.className !== `film-card__title`
-      && evt.target.className !== `film-card__comments`) {
-        return;
-      }
-
-      openPopup();
-
-      document.addEventListener(`keydown`, escKeyDownHandler);
-      filmPopupComponent.setClosePopupHandler(closePopupHandler);
-    };
-
-    filmCardComponent.setOpenPopupHandler(openPopupHandler);
+    this._filmPresenter[film.id] = filmPresenter;
   }
 
   _filmsSort(sortType) {
@@ -117,6 +81,17 @@ export default class FilmList {
       this._loadMoreBtnComponent.removeBtnClickHandler();
       remove(this._loadMoreBtnComponent);
     }
+  }
+
+  _handleFilmChange(updated) {
+    this._films = updateItem(this._films, updated);
+    this._sourcedFilms = updateItem(this._sourcedFilms, updated);
+
+    this._filmPresenter[updated.id].init(updated);
+  }
+
+  _handleChangeModeFilm() {
+    Object.values(this._filmPresenter).forEach((filmPresenter) => filmPresenter.resetView());
   }
 
   _renderFilmCards(from, to, container = this._filmListComponent) {
@@ -162,12 +137,13 @@ export default class FilmList {
 
     this._renderFilmList();
 
-    this._renderExtraFilms(new ExtraFilmContainerView());
-    this._renderExtraFilms(new ExtraFilmContainerView());
+  //  this._renderExtraFilms(new ExtraFilmContainerView());
+  // this._renderExtraFilms(new ExtraFilmContainerView());
   }
 
   _clearFilmList() {
-    this._filmListComponent.getElement().innerHTML = ``;
+    Object.values(this._filmPresenter)
+      .forEach((filmPresenter) => filmPresenter.destroy());
     this._renderedCardsCount = FILM_COUNT_GAP;
   }
 

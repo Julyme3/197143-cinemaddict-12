@@ -1,3 +1,4 @@
+import {formattedDuration} from "../utils/common";
 import AbstractView from "./abstract";
 
 export default class FilmCard extends AbstractView {
@@ -25,7 +26,7 @@ export default class FilmCard extends AbstractView {
         <p class="film-card__rating">${raiting}</p>
         <p class="film-card__info">
           <span class="film-card__year">${yearProduction}</span>
-          <span class="film-card__duration">${duration}</span>
+          <span class="film-card__duration">${formattedDuration(duration, `h[h] m[m]`)}</span>
           <span class="film-card__genre">${genres[0]}</span>
         </p>
         <img

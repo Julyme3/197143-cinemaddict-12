@@ -72,15 +72,9 @@ const generateRaiting = () => {
 };
 
 const generateDuration = () => {
-  const MAX_DURATION = 14400000; // miliseconds
-  const MIN_DURATION = 600000; // miliseconds
-  const random = getRandomInteger(MIN_DURATION, MAX_DURATION);
-  const date = new Date(random);
-  let hours = date.getUTCHours();
-  let minutes = date.getUTCMinutes();
-  hours = hours ? `${hours}h` : ``;
-  minutes = minutes ? `${minutes}m` : ``;
-  return `${hours} ${minutes}`;
+  const MAX_DURATION = 400; // minutes
+  const MIN_DURATION = 15; // minutes
+  return getRandomInteger(MIN_DURATION, MAX_DURATION);
 };
 
 const generateFilmCard = () => {

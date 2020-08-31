@@ -1,5 +1,5 @@
 import AbstractView from "./abstract";
-import {formattedDateTime} from "../utils/common";
+import {huminazeFormattedDate} from "../utils/common";
 
 export default class Comments extends AbstractView {
   constructor(comments) {
@@ -22,7 +22,7 @@ export default class Comments extends AbstractView {
           <p class="film-details__comment-text">${message}</p>
           <p class="film-details__comment-info">
             <span class="film-details__comment-author">${authorName}</span>
-            <span class="film-details__comment-day">${formattedDateTime(date)}</span>
+            <span class="film-details__comment-day">${huminazeFormattedDate(date, `YYYYMMDD`)}</span>
             <button class="film-details__comment-delete">Delete</button>
           </p>
         </div>

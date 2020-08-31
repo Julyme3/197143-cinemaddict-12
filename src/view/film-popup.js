@@ -1,4 +1,4 @@
-import {formattedDate} from "../utils/common";
+import {formattedDate, formattedDuration} from "../utils/common";
 import SmartView from "./smart";
 import {generateComment} from "../mock/comment";
 import CommentsView from "./comments";
@@ -62,11 +62,11 @@ export default class FilmPopup extends SmartView {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${formattedDate(release, {days: `numeric`, month: `long`, year: `numeric`})}</td>
+                <td class="film-details__cell">${formattedDate(release, `DD MMMM YYYY`)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${duration}</td>
+                <td class="film-details__cell">${formattedDuration(duration, `h[h] m[m]`)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>

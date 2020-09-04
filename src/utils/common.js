@@ -37,4 +37,25 @@ const huminazeFormattedDate = (date, format) => moment(date, format).fromNow();
 
 const formattedDuration = (duration, format) => moment.utc().startOf(`day`).add(duration, `minutes`).format(format);
 
-export {getRandomInteger, getRandom, getRandomItemFromList, formattedDate, generateRandomList, formattedDuration, huminazeFormattedDate};
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
+const isCtrlEnter = (evt, pressedKey) => {
+  const combinationsKey = [`Control`, `Enter`];
+  const key = evt.key;
+
+  pressedKey.add(key);
+
+  const removePressedKey = () => {
+    pressedKey.delete(key);
+  };
+
+  document.addEventListener(`keyup`, removePressedKey);
+
+  if (combinationsKey.every((item) => pressedKey.has(item))) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export {getRandomInteger, getRandom, getRandomItemFromList, formattedDate, generateRandomList, formattedDuration, huminazeFormattedDate, generateId, isCtrlEnter};

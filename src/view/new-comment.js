@@ -1,28 +1,32 @@
 import SmartView from "./smart";
-import {EMOJI} from "../const";
+import {EMOJI, UserAction} from "../const";
+import {generateId, isCtrlEnter} from "../utils/common";
+
+const pressedKey = new Set();
 
 export default class NewComment extends SmartView {
   constructor() {
     super();
     this._data = {
-      choosedEmoji: null,
-      inputMessage: ``,
+      emoji: null,
+      message: ``,
     };
 
     this._inputFormMessageHandler = this._inputFormMessageHandler.bind(this);
     this._enableEmojiToggleHandler = this._enableEmojiToggleHandler.bind(this);
+    this._addCommentHandler = this._addCommentHandler.bind(this);
 
     this._setInnerHandlers();
   }
 
   createImgTemplate() {
-    return `<img src="images/emoji/${this._data.choosedEmoji}.png" width="55" height="55" alt="emoji-${this._data.hoosedEmoji}">`;
+    return `<img src="images/emoji/${this._data.emoji}.png" width="55" height="55" alt="emoji-${this._data.emoji}">`;
   }
 
   createEmojiListTemplate() {
-    return EMOJI.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${emoji === this._data.choosedEmoji ? `checked` : ``}>
-        <label class="film-details__emoji-label" for="emoji-${emoji}">
-        <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
+    return EMOJI.map((emojiItem) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emojiItem}" value="${emojiItem}" ${emojiItem === this._data.emoji ? `checked` : ``}>
+        <label class="film-details__emoji-label" for="emoji-${emojiItem}">
+        <img src="./images/emoji/${emojiItem}.png" width="30" height="30" alt="emoji">
       </label>`
     ).join(``);
   }
@@ -30,7 +34,7 @@ export default class NewComment extends SmartView {
   createTemplate() {
     const emojiListTemplate = this.createEmojiListTemplate();
     return `<div class="film-details__new-comment">
-        <div for="add-emoji" class="film-details__add-emoji-label">${this._data.choosedEmoji ? this.createImgTemplate() : ``}</div>
+        <div for="add-emoji" class="film-details__add-emoji-label">${this._data.emoji ? this.createImgTemplate() : ``}</div>
 
         <label class="film-details__comment-label">
           <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -58,15 +62,39 @@ export default class NewComment extends SmartView {
   _inputFormMessageHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      inputMessage: evt.target.value
+      message: evt.target.value
     }, true);
   }
 
   _enableEmojiToggleHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      choosedEmoji: evt.target.value
+      emoji: evt.target.value
     });
+  }
+
+  _addCommentHandler(evt) {
+    if (this._data.message === `` || !this._data.emoji) {
+      return;
+    }
+
+    if (isCtrlEnter(evt, pressedKey)) {
+      const newComment = Object.assign(
+          {},
+          this._data,
+          {
+            id: generateId(),
+            authorName: `Author`,
+            date: new Date(),
+          });
+      this._callback.commentAdd(UserAction.ADD_COMMENT, newComment);
+      this.reset();
+    }
+  }
+
+  setAddCommentHandler(callback) {
+    this._callback.commentAdd = callback;
+    document.addEventListener(`keydown`, this._addCommentHandler);
   }
 
   _setInnerHandlers() { // внутренние обработчики
@@ -75,14 +103,15 @@ export default class NewComment extends SmartView {
   }
 
   reset() {
-    this._data = null;
+    this._data.emoji = null;
+    this._data.message = ``;
     this.getElement().querySelector(`.film-details__comment-input`).value = ``;
     this.getElement().querySelector(`.film-details__add-emoji-label`).innerHTML = ``;
-    this._destroyHandlers();
   }
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this.setAddCommentHandler(this._callback.commentAdd);
   }
 
   _destroyHandlers() {

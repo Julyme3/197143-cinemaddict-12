@@ -1,10 +1,8 @@
-import {getRandomInteger, getRandom, getRandomItemFromList, generateRandomList} from "../utils/common";
+import {getRandomInteger, getRandom, getRandomItemFromList, generateRandomList, generateId} from "../utils/common";
 import {getRandomDate} from "../utils/film";
 
 const MIN_LENGTH_DESCRIPTION = 1;
 const MAX_LENGTH_DESCRIPTION = 5;
-
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 const titles = [
   `The Dance of Life`,

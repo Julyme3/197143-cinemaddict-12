@@ -1,28 +1,44 @@
 import AbstractView from "./abstract";
 
 export default class Filter extends AbstractView {
-  constructor(filters) {
+  constructor(filters, activeFilterType) {
     super();
+    this._activeFilterType = activeFilterType;
     this._filters = filters;
+
+    this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
-  createItemTemplate(filter, isActive) {
+  createItemTemplate(filter, activeFilterType) {
+    const {type, title, count} = filter;
     const MAX_COUNT = 5;
 
-    return `<a href="#watchlist" class="main-navigation__item main-navigation__item-${isActive}">${filter.title}
-        ${(filter.title === `All movies` || filter.count > MAX_COUNT) ? `` : `<span class="main-navigation__item-count">${filter.count}</span>`}
+    return `<a href="#watchlist" class="main-navigation__item ${type === activeFilterType ? `main-navigation__item-active` : ``}" data-filter-type="${type}">${title}
+        ${(title === `All movies` || count > MAX_COUNT) ? `` : `<span class="main-navigation__item-count">${count}</span>`}
       </a>`
     ;
   }
 
-  createTemplate(filters) {
+  createTemplate(filters, activeFilterType) {
     return `<div class="main-navigation__items">
-        ${filters.map((filter, index) => this.createItemTemplate(filter, index === 0)).join(``)}
+        ${filters.map((filter) => this.createItemTemplate(filter, activeFilterType)).join(``)}
       </div>`
     ;
   }
 
   getTemplate() {
-    return this.createTemplate(this._filters);
+    return this.createTemplate(this._filters, this._activeFilterType);
+  }
+
+  _filterTypeChangeHandler(evt) {
+    evt.preventDefault();
+    if (evt.target.tagName === `A`) {
+      this._callback.filterTypeChange(evt.target.dataset.filterType);
+    }
+  }
+
+  setFilterTypeChangeHandler(callback) {
+    this._callback.filterTypeChange = callback;
+    this.getElement().addEventListener(`click`, this._filterTypeChangeHandler);
   }
 }

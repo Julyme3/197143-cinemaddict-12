@@ -1,7 +1,5 @@
 import {formattedDate, formattedDuration} from "../utils/common";
 import SmartView from "./smart";
-import {generateComment} from "../mock/comment";
-import CommentsView from "./comments";
 
 export default class FilmPopup extends SmartView {
   constructor(film) {
@@ -117,10 +115,9 @@ export default class FilmPopup extends SmartView {
   }
 
   createFilmPopupTemplate(film) {
-    const {isFavorite, isToWatchList, isWatched, comments} = film;
+    const {isFavorite, isToWatchList, isWatched} = film;
     const detailsTemplate = this.createDetailsTemplate(film);
     const btnControlsTemplate = this.createBtnControlsTemplate(isFavorite, isToWatchList, isWatched);
-    const commentsTemplate = new CommentsView(new Array(comments).fill().map(generateComment)).getTemplate();
 
     return `<section class="film-details">
         <form class="film-details__inner" action="" method="get">
@@ -132,7 +129,6 @@ export default class FilmPopup extends SmartView {
 
             ${btnControlsTemplate}
           <div class="form-details__bottom-container">
-            ${commentsTemplate}
           </div>
         </form>
       </section>`

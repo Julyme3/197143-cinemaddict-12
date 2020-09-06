@@ -1,9 +1,13 @@
 import {render, removeChild, appendChild, remove, replace} from "../utils/render";
+import {UserAction, UpdateType} from "../const.js";
 import FilmCardView from "../view/card";
 import FilmPopupView from "../view/film-popup";
-import NewCommentView from "../view/new-comment";
+import CommentsPresenter from "./comments";
+import CommentsModel from "../model/comments";
+import {generateComment} from "../mock/comment";
 
 const body = document.querySelector(`body`);
+const comments = new Array(3).fill().map(generateComment); // моки для комментариев
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -15,10 +19,12 @@ export default class Film {
     this._container = container;
     this._filmCardComponent = null;
     this._filmPopupComponent = null;
-    this._newCommentComponent = null;
     this._mode = Mode.DEFAULT;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._commentsContainer = null;
+    this._commentsModel = new CommentsModel();
+    this._commentsPresenter = null;
 
     this._openPopupHandler = this._openPopupHandler.bind(this);
     this._closePopupHandler = this._closePopupHandler.bind(this);
@@ -35,7 +41,8 @@ export default class Film {
     const prevFilmPopupComponent = this._filmPopupComponent;
     this._filmCardComponent = new FilmCardView(film);
     this._filmPopupComponent = new FilmPopupView(film);
-    this._newCommentComponent = new NewCommentView();
+    this._commentsModel.setComments(comments);
+
     this._filmCardComponent.setOpenPopupHandler(this._openPopupHandler);
     this._filmCardComponent.setAddToWatchlistClickHandler(this._handleClickAddToWatchlist);
     this._filmCardComponent.setAddToWatchedClickHandler(this._handleClickAddToWatched);
@@ -46,11 +53,13 @@ export default class Film {
     this._filmPopupComponent.setAddToWatchedClickHandler(this._handleClickAddToWatched);
     this._filmPopupComponent.setAddToFavoritesClickHandler(this._handleClickAddToFavorites);
 
-    const newCommentContainer = this._filmPopupComponent.getElement().querySelector(`.film-details__comments-wrap`);
+    this._commentsContainer = this._filmPopupComponent.getElement().querySelector(`.form-details__bottom-container`);
+
+    this._commentsPresenter = new CommentsPresenter(this._commentsContainer, this._commentsModel);
+    this._commentsPresenter.init(comments);
 
     if (prevFilmComponent === null || prevFilmPopupComponent === null) {
       render(this._container, this._filmCardComponent, `beforeend`);
-      appendChild(newCommentContainer, this._newCommentComponent);
       return;
     }
 
@@ -60,7 +69,6 @@ export default class Film {
 
     if (body.contains(prevFilmPopupComponent.getElement())) {
       replace(this._filmPopupComponent, prevFilmPopupComponent);
-      appendChild(newCommentContainer, this._newCommentComponent);
     }
 
     remove(prevFilmComponent);
@@ -69,12 +77,18 @@ export default class Film {
 
   _closePopup() {
     removeChild(this._filmPopupComponent);
+    this._commentsPresenter.destroy();
+    this._commentsPresenter = null;
     this._mode = Mode.DEFAULT;
-    this._newCommentComponent.reset();
   }
 
   _openPopup() {
     appendChild(body, this._filmPopupComponent);
+    if (!this._commentsPresenter) {
+      this._commentsPresenter = new CommentsPresenter(this._commentsContainer, this._commentsModel);
+      this._commentsPresenter.init(comments);
+    }
+
     this._changeMode();
     this._mode = Mode.POPUP;
   }
@@ -107,30 +121,42 @@ export default class Film {
   }
 
   _handleClickAddToWatchlist() {
-    this._changeData(Object.assign({},
-        this._film,
-        {
-          isToWatchList: !this._film.isToWatchList
-        }
-    ));
+    const isMinorUpdate = this._mode === Mode.DEFAULT;
+    this._changeData(
+        UserAction.UPDATE_FILM,
+        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+        Object.assign({},
+            this._film,
+            {
+              isToWatchList: !this._film.isToWatchList
+            }
+        ));
   }
 
   _handleClickAddToWatched() {
-    this._changeData(Object.assign({},
-        this._film,
-        {
-          isWatched: !this._film.isWatched
-        }
-    ));
+    const isMinorUpdate = this._mode === Mode.DEFAULT;
+    this._changeData(
+        UserAction.UPDATE_FILM,
+        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+        Object.assign({},
+            this._film,
+            {
+              isWatched: !this._film.isWatched
+            }
+        ));
   }
 
   _handleClickAddToFavorites() {
-    this._changeData(Object.assign({},
-        this._film,
-        {
-          isFavorite: !this._film.isFavorite
-        }
-    ));
+    const isMinorUpdate = this._mode === Mode.DEFAULT;
+    this._changeData(
+        UserAction.UPDATE_FILM,
+        isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+        Object.assign({},
+            this._film,
+            {
+              isFavorite: !this._film.isFavorite
+            }
+        ));
   }
 
   resetView() {

@@ -1,13 +1,12 @@
 import {render, removeChild, appendChild, remove, replace} from "../utils/render";
-import {UserAction, UpdateType} from "../const.js";
+import {UserAction, UpdateType, AUTHORIZATION, END_POINT} from "../const.js";
 import FilmCardView from "../view/card";
 import FilmPopupView from "../view/film-popup";
 import CommentsPresenter from "./comments";
 import CommentsModel from "../model/comments";
-import {generateComment} from "../mock/comment";
+import Api from "../api";
 
 const body = document.querySelector(`body`);
-const comments = new Array(3).fill().map(generateComment); // моки для комментариев
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -19,6 +18,7 @@ export default class Film {
     this._container = container;
     this._filmCardComponent = null;
     this._filmPopupComponent = null;
+    this._api = new Api(END_POINT, AUTHORIZATION);
     this._mode = Mode.DEFAULT;
     this._changeData = changeData;
     this._changeMode = changeMode;
@@ -41,7 +41,10 @@ export default class Film {
     const prevFilmPopupComponent = this._filmPopupComponent;
     this._filmCardComponent = new FilmCardView(film);
     this._filmPopupComponent = new FilmPopupView(film);
-    this._commentsModel.setComments(comments);
+
+    this._api.getItems(`comments/${this._film.id}`, CommentsModel)
+      .then((comments) => this._commentsModel.setComments(UpdateType.INIT, comments))
+      .catch(() => this._commentsModel.setComments(UpdateType.INIT, [])); // получаем список комментариев
 
     this._filmCardComponent.setOpenPopupHandler(this._openPopupHandler);
     this._filmCardComponent.setAddToWatchlistClickHandler(this._handleClickAddToWatchlist);
@@ -54,9 +57,8 @@ export default class Film {
     this._filmPopupComponent.setAddToFavoritesClickHandler(this._handleClickAddToFavorites);
 
     this._commentsContainer = this._filmPopupComponent.getElement().querySelector(`.form-details__bottom-container`);
-
     this._commentsPresenter = new CommentsPresenter(this._commentsContainer, this._commentsModel);
-    this._commentsPresenter.init(comments);
+    this._commentsPresenter.init();
 
     if (prevFilmComponent === null || prevFilmPopupComponent === null) {
       render(this._container, this._filmCardComponent, `beforeend`);
@@ -86,7 +88,7 @@ export default class Film {
     appendChild(body, this._filmPopupComponent);
     if (!this._commentsPresenter) {
       this._commentsPresenter = new CommentsPresenter(this._commentsContainer, this._commentsModel);
-      this._commentsPresenter.init(comments);
+      this._commentsPresenter.init();
     }
 
     this._changeMode();

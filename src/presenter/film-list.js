@@ -7,6 +7,7 @@ import NoFilmView from "../view/no-film";
 import LoadMoreBtnView from "../view/load-more-btn";
 import SortView from "../view/sort";
 import FilmListView from "../view/film-list";
+import LoadingView from "../view/loading";
 // import ExtraFilmContainerView from "../view/extra-film";
 import FilmPresenter from "../presenter/film";
 
@@ -14,18 +15,21 @@ const FILM_COUNT_GAP = 5;
 // const EXTRA_FILM_CARD_COUNT = 2;
 
 export default class FilmList {
-  constructor(container, filmsModel, filterModel) {
+  constructor(container, filmsModel, filterModel, api) {
     this._filmListContainer = container;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
+    this._api = api;
     this._filmListInnerContainerComponent = new FilmContainerView();
     this._noFilmComponent = new NoFilmView();
     this._loadMoreBtnComponent = null;
     this._filmListComponent = new FilmListView();
+    this._loadingComponent = new LoadingView();
     this._sortComponent = null;
 
     this._currentSortType = SortTypes.DEFAULT;
     this._filmPresenter = {};
+    this._isLoading = true;
 
     this._filmListElement = this._filmListInnerContainerComponent.getElement().querySelector(`.films-list`);
     this._renderedCardsCount = FILM_COUNT_GAP;
@@ -90,7 +94,8 @@ export default class FilmList {
   _handleViewAction(actionType, updateType, updated) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, updated);
+        this._api.updateFilm(updated)
+          .then((response) => this._filmsModel.updateFilm(updateType, response));
         break;
     }
   }
@@ -106,6 +111,11 @@ export default class FilmList {
         break;
       case UpdateType.MAJOR:
         this._clearBoard({resetRenderedTaskCount: true, resetSortType: true});
+        this._renderBoard();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this._renderBoard();
         break;
     }
@@ -128,6 +138,10 @@ export default class FilmList {
     render(this._filmListInnerContainerComponent, this._sortComponent, `afterbegin`);
 
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+  }
+
+  _renderLoading() {
+    render(this._filmListElement, this._loadingComponent, `afterbegin`);
   }
 
   _renderLoadMoreBtn() {
@@ -161,6 +175,11 @@ export default class FilmList {
   _renderBoard() {
     const filmsCount = this._getFilms().length;
 
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     if (!filmsCount) {
       this._filmListElement.innerHTML = this._noFilmComponent.getTemplate();
       return;
@@ -190,6 +209,8 @@ export default class FilmList {
     remove(this._loadMoreBtnComponent);
     remove(this._sortComponent);
     remove(this._noFilmComponent);
+    remove(this._loadingComponent);
+    this._filmListElement.innerHTML = `<h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>`;
 
     if (resetRenderedTaskCount) {
       this._renderedCardsCount = FILM_COUNT_GAP; // сбрасываем кол-во отрисованных страниц до максимального по умолчанию

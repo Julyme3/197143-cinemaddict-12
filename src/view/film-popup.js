@@ -27,10 +27,10 @@ export default class FilmPopup extends SmartView {
     return `<div class="film-details__info-wrap">
         <div class="film-details__poster">
           <img class="film-details__poster-img"
-          src="./images/posters/${poster}"
+          src="${poster}"
           alt=""
           />
-          <p class="film-details__age">${ageRaiting}</p>
+          <p class="film-details__age">${ageRaiting}+</p>
         </div>
 
         <div class="film-details__info">

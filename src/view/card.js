@@ -1,4 +1,4 @@
-import {formattedDuration} from "../utils/common";
+import {formattedDuration, formattedDate} from "../utils/common";
 import AbstractView from "./abstract";
 
 export default class FilmCard extends AbstractView {
@@ -13,7 +13,7 @@ export default class FilmCard extends AbstractView {
 
   createTemplate(film) {
     const MAX_DESCRIPTION_LENGTH = 140;
-    const {title, raiting, yearProduction, duration, poster, genres, isFavorite, isToWatchList, isWatched, comments} = film;
+    const {title, raiting, release, duration, poster, genres, isFavorite, isToWatchList, isWatched, comments} = film;
     let {description} = film;
     const favoriteActiveClass = isFavorite ? `film-card__controls-item--active` : ``;
     const watchListActiveClass = isToWatchList ? `film-card__controls-item--active` : ``;
@@ -25,17 +25,17 @@ export default class FilmCard extends AbstractView {
         <h3 class="film-card__title">${title}</h3>
         <p class="film-card__rating">${raiting}</p>
         <p class="film-card__info">
-          <span class="film-card__year">${yearProduction}</span>
+          <span class="film-card__year">${formattedDate(release, `YYYY`)}</span>
           <span class="film-card__duration">${formattedDuration(duration, `h[h] m[m]`)}</span>
           <span class="film-card__genre">${genres[0]}</span>
         </p>
         <img
-          src="./images/posters/${poster}"
+          src="${poster}"
           alt=""
           class="film-card__poster"
         />
         <p class="film-card__description">${description}</p>
-        <a class="film-card__comments">${comments} comments</a>
+        <a class="film-card__comments">${comments.length} comments</a>
         <form class="film-card__controls">
           <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${watchListActiveClass}">Add to watchlist</button>
           <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${watchedActiveClass}">Mark as watched</button>

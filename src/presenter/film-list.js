@@ -64,7 +64,7 @@ export default class FilmList {
   }
 
   _renderFilmCard(container, film) {
-    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleChangeModeFilm, this._filmsModel);
+    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleChangeModeFilm, this._rerenderListAfterClosePopup.bind(this));
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
   }
@@ -153,6 +153,11 @@ export default class FilmList {
     render(this._filmListElement, this._loadMoreBtnComponent, `beforeend`);
 
     this._loadMoreBtnComponent.setBtnClickHandler(this._handleLoadMoreButtonClick);
+  }
+
+  _rerenderListAfterClosePopup() {
+    this._clearBoard();
+    this._renderBoard();
   }
 
   // _renderExtraFilms(extraContainer) {

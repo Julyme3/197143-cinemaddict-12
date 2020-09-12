@@ -185,6 +185,16 @@ export default class FilmList {
       return;
     }
 
+    if (this._filmListInnerContainerComponent === null) {
+      this._filmListInnerContainerComponent = new FilmContainerView();
+      this._filmListElement = this._filmListInnerContainerComponent.getElement().querySelector(`.films-list`);
+      render(this._filmListContainer, this._filmListInnerContainerComponent, `beforeend`);
+    }
+
+    if (this._filmListComponent === null) {
+      this._filmListComponent = new FilmListView();
+    }
+
     this._renderSort();
     render(this._filmListElement, this._filmListComponent, `beforeend`);
 
@@ -221,5 +231,14 @@ export default class FilmList {
     if (resetSortType) {
       this._currentSortType = SortTypes.DEFAULT;
     }
+  }
+
+  destroy() {
+    this._clearBoard({resetRenderedTaskCount: true, resetSortType: true});
+
+    remove(this._filmListComponent);
+    remove(this._filmListInnerContainerComponent);
+    this._filmListComponent = null;
+    this._filmListInnerContainerComponent = null;
   }
 }

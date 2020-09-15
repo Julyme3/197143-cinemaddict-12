@@ -1,4 +1,5 @@
 import moment from "moment";
+import {KeyCode} from "../const";
 
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -39,23 +40,11 @@ const formattedDuration = (duration, format) => moment.utc().startOf(`day`).add(
 
 const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
-const isCtrlEnter = (evt, pressedKey) => {
-  const combinationsKey = [`Control`, `Enter`];
-  const key = evt.key;
-
-  pressedKey.add(key);
-
-  const removePressedKey = () => {
-    pressedKey.delete(key);
-  };
-
-  document.addEventListener(`keyup`, removePressedKey);
-
-  if (combinationsKey.every((item) => pressedKey.has(item))) {
+const isCtrlEnter = (evt) => {
+  if ((evt.ctrlKey || evt.metaKey) && evt.keyCode === KeyCode.ENTER) {
     return true;
-  } else {
-    return false;
   }
+  return false;
 };
 
 export {getRandomInteger, getRandom, getRandomItemFromList, formattedDate, generateRandomList, formattedDuration, huminazeFormattedDate, generateId, isCtrlEnter};

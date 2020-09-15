@@ -2,8 +2,6 @@ import SmartView from "./smart";
 import {EMOJI, UserAction} from "../const";
 import {generateId, isCtrlEnter} from "../utils/common";
 
-const pressedKey = new Set();
-
 export default class NewComment extends SmartView {
   constructor() {
     super();
@@ -78,7 +76,7 @@ export default class NewComment extends SmartView {
       return;
     }
 
-    if (isCtrlEnter(evt, pressedKey)) {
+    if (isCtrlEnter(evt)) {
       const newComment = Object.assign(
           {},
           this._data,

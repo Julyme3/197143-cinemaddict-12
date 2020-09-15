@@ -14,7 +14,7 @@ const Mode = {
 };
 
 export default class Film {
-  constructor(container, changeData, changeMode) {
+  constructor(container, changeData, changeMode, handleAfterClosePopup) {
     this._container = container;
     this._filmCardComponent = null;
     this._filmPopupComponent = null;
@@ -25,6 +25,8 @@ export default class Film {
     this._commentsContainer = null;
     this._commentsModel = new CommentsModel();
     this._commentsPresenter = null;
+    this._needRerender = false;
+    this._handleAfterClosePopup = handleAfterClosePopup;
 
     this._openPopupHandler = this._openPopupHandler.bind(this);
     this._closePopupHandler = this._closePopupHandler.bind(this);
@@ -32,6 +34,7 @@ export default class Film {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleClickAddToWatched = this._handleClickAddToWatched.bind(this);
     this._handleClickAddToFavorites = this._handleClickAddToFavorites.bind(this);
+    this._handleAfterClosePopup = this._handleAfterClosePopup.bind(this);
   }
 
   init(film) {
@@ -82,6 +85,10 @@ export default class Film {
     this._commentsPresenter.destroy();
     this._commentsPresenter = null;
     this._mode = Mode.DEFAULT;
+    if (this._needRerender) {
+      this._handleAfterClosePopup();
+      this._needRerender = false;
+    }
   }
 
   _openPopup() {
@@ -124,6 +131,10 @@ export default class Film {
 
   _handleClickAddToWatchlist() {
     const isMinorUpdate = this._mode === Mode.DEFAULT;
+    if (!isMinorUpdate) {
+      this._needRerender = true;
+    }
+
     this._changeData(
         UserAction.UPDATE_FILM,
         isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
@@ -137,6 +148,9 @@ export default class Film {
 
   _handleClickAddToWatched() {
     const isMinorUpdate = this._mode === Mode.DEFAULT;
+    if (!isMinorUpdate) {
+      this._needRerender = true;
+    }
     this._changeData(
         UserAction.UPDATE_FILM,
         isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
@@ -150,6 +164,9 @@ export default class Film {
 
   _handleClickAddToFavorites() {
     const isMinorUpdate = this._mode === Mode.DEFAULT;
+    if (!isMinorUpdate) {
+      this._needRerender = true;
+    }
     this._changeData(
         UserAction.UPDATE_FILM,
         isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,

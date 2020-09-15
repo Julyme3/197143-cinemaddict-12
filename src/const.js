@@ -42,4 +42,8 @@ const AUTHORIZATION = `Basic fsdfds432dfsf1`;
 
 const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict`;
 
-export {EMOJI, RankFromWatchCount, SortTypes, UserAction, UpdateType, FilterType, AUTHORIZATION, END_POINT, UserRank};
+const KeyCode = {
+  ENTER: 13
+};
+
+export {EMOJI, RankFromWatchCount, SortTypes, UserAction, UpdateType, FilterType, AUTHORIZATION, END_POINT, UserRank, KeyCode};

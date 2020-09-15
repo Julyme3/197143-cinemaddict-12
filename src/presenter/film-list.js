@@ -64,7 +64,7 @@ export default class FilmList {
   }
 
   _renderFilmCard(container, film) {
-    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleChangeModeFilm, this._filmsModel);
+    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._handleChangeModeFilm, this._rerenderListAfterClosePopup.bind(this));
     filmPresenter.init(film);
     this._filmPresenter[film.id] = filmPresenter;
   }
@@ -155,6 +155,11 @@ export default class FilmList {
     this._loadMoreBtnComponent.setBtnClickHandler(this._handleLoadMoreButtonClick);
   }
 
+  _rerenderListAfterClosePopup() {
+    this._clearBoard();
+    this._renderBoard();
+  }
+
   // _renderExtraFilms(extraContainer) {
   //   render(this._filmListInnerContainerComponent, extraContainer, `beforeend`);
   //   const extraFilmList = extraContainer.getElement().querySelector(`.films-list__container`);
@@ -183,6 +188,16 @@ export default class FilmList {
     if (!filmsCount) {
       this._filmListElement.innerHTML = this._noFilmComponent.getTemplate();
       return;
+    }
+
+    if (this._filmListInnerContainerComponent === null) {
+      this._filmListInnerContainerComponent = new FilmContainerView();
+      this._filmListElement = this._filmListInnerContainerComponent.getElement().querySelector(`.films-list`);
+      render(this._filmListContainer, this._filmListInnerContainerComponent, `beforeend`);
+    }
+
+    if (this._filmListComponent === null) {
+      this._filmListComponent = new FilmListView();
     }
 
     this._renderSort();
@@ -221,5 +236,14 @@ export default class FilmList {
     if (resetSortType) {
       this._currentSortType = SortTypes.DEFAULT;
     }
+  }
+
+  destroy() {
+    this._clearBoard({resetRenderedTaskCount: true, resetSortType: true});
+
+    remove(this._filmListComponent);
+    remove(this._filmListInnerContainerComponent);
+    this._filmListComponent = null;
+    this._filmListInnerContainerComponent = null;
   }
 }

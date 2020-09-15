@@ -4,11 +4,12 @@ import {FilterType, UpdateType} from "../const";
 import {render, replace, remove} from "../utils/render";
 
 export default class Filter {
-  constructor(container, filterModel, filmsModel) {
+  constructor(container, filterModel, filmsModel, changeViewFromStatistics) {
     this._container = container;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
     this._filterComponent = null;
+    this._changeViewFromStatistics = changeViewFromStatistics;
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -61,6 +62,14 @@ export default class Filter {
   }
 
   _handleViewAction(filterType) {
+    const statisticsElement = document.querySelector(`.statistic`);
+
+    if (statisticsElement && this._changeViewFromStatistics) { // если переключение со статистики
+      this._changeViewFromStatistics();
+      this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+      return;
+    }
+
     if (this._currentFilterType === filterType) {
       return;
     }

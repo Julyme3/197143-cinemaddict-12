@@ -1,17 +1,20 @@
 import he from "he";
-import AbstractView from "./abstract";
+import SmartView from "./smart";
 import {huminazeFormattedDate} from "../utils/common";
 import {UserAction} from "../const";
 
-export default class Comments extends AbstractView {
-  constructor(comments) {
+export default class Comments extends SmartView {
+  constructor(comments = []) {
     super();
-    this._comments = comments;
+    this._data = {
+      comments,
+      isDeleting: null
+    };
 
     this._deleteClickHandler = this._deleteClickHandler.bind(this);
   }
 
-  createCommentItemTemplate(comment) {
+  createCommentItemTemplate(comment, isDeleting) {
     const {emoji, message, authorName, date, id} = comment;
 
     return `<li class="film-details__comment">
@@ -27,15 +30,19 @@ export default class Comments extends AbstractView {
           <p class="film-details__comment-info">
             <span class="film-details__comment-author">${authorName}</span>
             <span class="film-details__comment-day">${huminazeFormattedDate(date, `YYYYMMDD`)}</span>
-            <button class="film-details__comment-delete" data-id="${id}">Delete</button>
+            <button class="film-details__comment-delete" data-id="${id}" ${isDeleting ? `disabled` : ``}>${isDeleting ? `Deleting` : `Delete`}</button>
           </p>
         </div>
       </li>`
     ;
   }
 
-  createCommentsTemplate(comments) {
-    const commentTemplate = comments.map(this.createCommentItemTemplate).join(``);
+  createCommentsTemplate(data) {
+    const comments = data.comments;
+    const commentTemplate = comments.map((comment) => {
+      const isDeleting = (data.isDeleting && data.isDeleting[comment.id]) ? true : false;
+      return this.createCommentItemTemplate(comment, isDeleting);
+    }).join(``);
 
     return `<section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
@@ -48,7 +55,7 @@ export default class Comments extends AbstractView {
   }
 
   getTemplate() {
-    return this.createCommentsTemplate(this._comments);
+    return this.createCommentsTemplate(this._data);
   }
 
   _deleteClickHandler(evt) {
@@ -62,5 +69,9 @@ export default class Comments extends AbstractView {
   setDeleteClickHandler(callback) {
     this._callback.commentDelete = callback;
     this.getElement().addEventListener(`click`, this._deleteClickHandler);
+  }
+
+  restoreHandlers() {
+    this.setDeleteClickHandler(this._callback.commentDelete);
   }
 }

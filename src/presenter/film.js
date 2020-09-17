@@ -60,7 +60,7 @@ export default class Film {
     this._filmPopupComponent.setAddToFavoritesClickHandler(this._handleClickAddToFavorites);
 
     this._commentsContainer = this._filmPopupComponent.getElement().querySelector(`.form-details__bottom-container`);
-    this._commentsPresenter = new CommentsPresenter(this._commentsContainer, this._commentsModel);
+    this._commentsPresenter = new CommentsPresenter(this._commentsContainer, this._commentsModel, this._film);
     this._commentsPresenter.init();
 
     if (prevFilmComponent === null || prevFilmPopupComponent === null) {

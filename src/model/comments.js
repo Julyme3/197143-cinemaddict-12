@@ -26,7 +26,7 @@ export default class Comments extends Observer {
   }
 
   deleteComment(updatedItemID) {
-    const idx = this._comments.findIndex((item) => item.id === +updatedItemID);
+    const idx = this._comments.findIndex((item) => item.id === updatedItemID);
 
     if (idx === -1) {
       throw new Error(`Can't update unexisting task`);
@@ -58,13 +58,28 @@ export default class Comments extends Observer {
     return adaptedComment;
   }
 
+  static adaptToClientPostComment(data) {
+    const comment = data.comments[data.comments.length - 1]; // забираем последний комментарий из массива
+    const adaptedComment = Object.assign(
+        {},
+        {
+          message: comment.comment,
+          authorName: comment.author,
+          emoji: comment.emotion,
+          id: comment.id,
+          date: new Date(comment.date)
+        }
+    );
+
+    return adaptedComment;
+  }
+
   static adaptToServer(comment) {
     const adaptedComment = Object.assign(
         {},
         comment,
         {
           comment: comment.message,
-          author: comment.authorName,
           emotion: comment.emoji
         }
     );

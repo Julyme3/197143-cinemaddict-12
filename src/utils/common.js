@@ -38,8 +38,6 @@ const huminazeFormattedDate = (date, format) => moment(date, format).fromNow();
 
 const formattedDuration = (duration, format) => moment.utc().startOf(`day`).add(duration, `minutes`).format(format);
 
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
-
 const isCtrlEnter = (evt) => {
   if ((evt.ctrlKey || evt.metaKey) && evt.keyCode === KeyCode.ENTER) {
     return true;
@@ -47,4 +45,4 @@ const isCtrlEnter = (evt) => {
   return false;
 };
 
-export {getRandomInteger, getRandom, getRandomItemFromList, formattedDate, generateRandomList, formattedDuration, huminazeFormattedDate, generateId, isCtrlEnter};
+export {getRandomInteger, getRandom, getRandomItemFromList, formattedDate, generateRandomList, formattedDuration, huminazeFormattedDate, isCtrlEnter};

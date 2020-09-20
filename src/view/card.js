@@ -18,8 +18,9 @@ export default class FilmCard extends AbstractView {
     const favoriteActiveClass = isFavorite ? `film-card__controls-item--active` : ``;
     const watchListActiveClass = isToWatchList ? `film-card__controls-item--active` : ``;
     const watchedActiveClass = isWatched ? `film-card__controls-item--active` : ``;
+    const unicodeHorizontalEllipsis = `&#8230;`;
 
-    description = description.length > MAX_DESCRIPTION_LENGTH ? `${description.substring(0, MAX_DESCRIPTION_LENGTH - 1)}&#8230;` : description;
+    description = description.length > MAX_DESCRIPTION_LENGTH ? `${description.substring(0, MAX_DESCRIPTION_LENGTH - 1)}${unicodeHorizontalEllipsis}` : description;
 
     return `<article class="film-card">
         <h3 class="film-card__title">${title}</h3>

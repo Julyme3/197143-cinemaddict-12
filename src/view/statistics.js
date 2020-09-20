@@ -7,7 +7,6 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 const BAR_HEIGHT = 50;
 
 const renderDaysChart = (statisticCtx, films) => {
-  // Функция для отрисовки графика по жанрам
   const genres = films.map((film) => film.genres);
   const uniqGenres = makeItemsUniq([].concat(...genres));
   const countFilmsByGenre = uniqGenres.map((genre) => getFilmsByGenre(films, genre));

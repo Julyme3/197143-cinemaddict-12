@@ -11,7 +11,8 @@ export default class NewComment extends SmartView {
       isDisabled: false
     };
 
-    this._textarea = this.getElement().querySelector(`.film-details__comment-input`);
+    this._selectorTextarea = `.film-details__comment-input`;
+    this._isEmojiChecked = false;
 
     this._inputFormMessageHandler = this._inputFormMessageHandler.bind(this);
     this._enableEmojiToggleHandler = this._enableEmojiToggleHandler.bind(this);
@@ -61,7 +62,7 @@ export default class NewComment extends SmartView {
   }
 
   _handleInputFormMessage() {
-    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`change`, this._inputFormMessageHandler);
+    this.getElement().querySelector(this._selectorTextarea).addEventListener(`change`, this._inputFormMessageHandler);
   }
 
   _inputFormMessageHandler(evt) {
@@ -77,7 +78,8 @@ export default class NewComment extends SmartView {
       emoji: evt.target.value
     });
 
-    this.getElement().querySelector(`.film-details__comment-input`).value = this._data.message;
+    this.getElement().querySelector(this._selectorTextarea).value = this._data.message;
+    this._isEmojiChecked = true;
   }
 
   _addCommentHandler(evt) {
@@ -102,26 +104,28 @@ export default class NewComment extends SmartView {
     document.addEventListener(`keydown`, this._addCommentHandler);
   }
 
-  _setInnerHandlers() { // внутренние обработчики
+  _setInnerHandlers() {
     this._enableEmojiToggler();
     this._handleInputFormMessage();
   }
 
   reset() {
-    this._data.emoji = null;
-    this._data.message = ``;
-    this.getElement().querySelector(`.film-details__comment-input`).value = ``;
-    this.getElement().querySelector(`.film-details__add-emoji-label`).innerHTML = ``;
+    if (this._data.emoji || this._data.message || this._isEmojiChecked) {
+      this.getElement().querySelector(this._selectorTextarea).value = ``;
+      this.getElement().querySelector(`.film-details__add-emoji-label`).innerHTML = ``;
+      this._data.emoji = null;
+      this._data.message = ``;
+      Array.from(this.getElement().querySelectorAll(`.film-details__emoji-item`))
+      .find((input) => input.checked)
+      .checked = false;
+
+      this._isEmojiChecked = false;
+    }
   }
 
   restoreHandlers() {
     this._setInnerHandlers();
     this.setAddCommentHandler(this._callback.commentAdd);
-  }
-
-  _destroyHandlers() {
-    this.getElement().querySelector(`.film-details__emoji-list`).removeEventListener(`change`, this._enableEmojiToggleHandler);
-    this.getElement().querySelector(`.film-details__comment-input`).removeEventListener(`change`, this._inputFormMessageHandler);
   }
 
 }

@@ -12,9 +12,10 @@ export default class Filter extends AbstractView {
   createItemTemplate(filter, activeFilterType) {
     const {type, title, count} = filter;
     const MAX_COUNT = 5;
+    const showCount = count <= MAX_COUNT && title !== `All movies`;
 
     return `<a href="#watchlist" class="main-navigation__item ${type === activeFilterType ? `main-navigation__item-active` : ``}" data-filter-type="${type}">${title}
-        ${(title === `All movies` || count > MAX_COUNT) ? `` : `<span class="main-navigation__item-count">${count}</span>`}
+        ${showCount ? `<span class="main-navigation__item-count">${count}</span>` : ``}
       </a>`
     ;
   }

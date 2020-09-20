@@ -24,8 +24,4 @@ export default class LoadMoreBtn extends AbstractView {
     this._callback.btnClick = callback;
     this.getElement().addEventListener(`click`, this._btnClickHandler);
   }
-
-  removeBtnClickHandler() {
-    this.getElement().removeEventListener(`click`, this._callback.btnClick);
-  }
 }

@@ -1,6 +1,6 @@
 import {render, remove} from "../utils/render";
 import {sortByDateDown, sortByRatingDown} from "../utils/film";
-import {SortTypes, UserAction, UpdateType} from "../const";
+import {SortType, UserAction, UpdateType} from "../const";
 import {filter} from "../utils/filter";
 import FilmContainerView from "../view/film-container";
 import NoFilmView from "../view/no-film";
@@ -8,11 +8,9 @@ import LoadMoreBtnView from "../view/load-more-btn";
 import SortView from "../view/sort";
 import FilmListView from "../view/film-list";
 import LoadingView from "../view/loading";
-// import ExtraFilmContainerView from "../view/extra-film";
 import FilmPresenter from "../presenter/film";
 
 const FILM_COUNT_GAP = 5;
-// const EXTRA_FILM_CARD_COUNT = 2;
 
 export default class FilmList {
   constructor(container, filmsModel, filterModel, api) {
@@ -27,7 +25,7 @@ export default class FilmList {
     this._loadingComponent = new LoadingView();
     this._sortComponent = null;
 
-    this._currentSortType = SortTypes.DEFAULT;
+    this._currentSortType = SortType.DEFAULT;
     this._filmPresenter = {};
     this._isLoading = true;
 
@@ -54,9 +52,9 @@ export default class FilmList {
     const filteredFilms = filter[currentFilterType](films);
 
     switch (this._currentSortType) {
-      case SortTypes.DATE:
+      case SortType.DATE:
         return filteredFilms.sort(sortByDateDown);
-      case SortTypes.RATING:
+      case SortType.RATING:
         return filteredFilms.sort(sortByRatingDown);
     }
 
@@ -86,7 +84,6 @@ export default class FilmList {
     this._renderedCardsCount += FILM_COUNT_GAP;
 
     if (this._renderedCardsCount >= filmsCount) {
-      this._loadMoreBtnComponent.removeBtnClickHandler();
       remove(this._loadMoreBtnComponent);
     }
   }
@@ -160,23 +157,6 @@ export default class FilmList {
     this._renderBoard();
   }
 
-  // _renderExtraFilms(extraContainer) {
-  //   render(this._filmListInnerContainerComponent, extraContainer, `beforeend`);
-  //   const extraFilmList = extraContainer.getElement().querySelector(`.films-list__container`);
-
-  //   this._renderFilmCards(0, EXTRA_FILM_CARD_COUNT, extraFilmList);
-  // }
-
-  // _renderFilmList() { // только основная часть списка фильмов (без экстра блока)
-  //   const filmsCount = this._getFilms().length;
-  //   this._renderFilmCards(0, Math.min(FILM_COUNT_GAP, filmsCount));
-
-  //   if (filmsCount > FILM_COUNT_GAP) {
-  //     this._renderLoadMoreBtn();
-  //   }
-
-  // }
-
   _renderBoard() {
     const filmsCount = this._getFilms().length;
 
@@ -209,9 +189,6 @@ export default class FilmList {
     if (filmsCount > this._renderedCardsCount) {
       this._renderLoadMoreBtn();
     }
-
-  //  this._renderExtraFilms(new ExtraFilmContainerView());
-  // this._renderExtraFilms(new ExtraFilmContainerView());
   }
 
   _clearBoard({resetRenderedTaskCount = false, resetSortType = false} = {}) {
@@ -228,13 +205,13 @@ export default class FilmList {
     this._filmListElement.innerHTML = `<h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>`;
 
     if (resetRenderedTaskCount) {
-      this._renderedCardsCount = FILM_COUNT_GAP; // сбрасываем кол-во отрисованных страниц до максимального по умолчанию
+      this._renderedCardsCount = FILM_COUNT_GAP;
     } else {
       this._renderedCardsCount = Math.min(filmsCount, this._renderedCardsCount);
     }
 
     if (resetSortType) {
-      this._currentSortType = SortTypes.DEFAULT;
+      this._currentSortType = SortType.DEFAULT;
     }
   }
 

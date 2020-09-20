@@ -117,7 +117,7 @@ export default class Comment {
         });
         break;
       case State.ABORTING:
-        if (updated) { // пытаемся удалить комментарий
+        if (updated) {
           const commentEl = this._commentsComponent.getElement().querySelector(`.film-details__comment-delete[data-id="${updated}"]`).closest(`.film-details__comment`);
           this._setAbortingDeleteComment(commentEl);
         } else {
@@ -126,8 +126,7 @@ export default class Comment {
     }
   }
 
-  destroy() {
-    remove(this._commentsComponent);
-    remove(this._newCommentComponent);
+  resetInputComment() {
+    this._newCommentComponent.reset();
   }
 }

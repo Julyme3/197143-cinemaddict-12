@@ -6,7 +6,7 @@ const RankFromWatchCount = {
   MOVIE_BUFF: 21,
 };
 
-const SortTypes = {
+const SortType = {
   DEFAULT: `default`,
   DATE: `date`,
   RATING: `rating`,
@@ -43,7 +43,7 @@ const AUTHORIZATION = `Basic fsdfds432dfsf1`;
 const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict`;
 
 const KeyCode = {
-  ENTER: 13
+  ENTER: 13,
 };
 
-export {EMOJI, RankFromWatchCount, SortTypes, UserAction, UpdateType, FilterType, AUTHORIZATION, END_POINT, UserRank, KeyCode};
+export {EMOJI, RankFromWatchCount, SortType, UserAction, UpdateType, FilterType, AUTHORIZATION, END_POINT, UserRank, KeyCode};

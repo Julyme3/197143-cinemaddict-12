@@ -16,7 +16,7 @@ export default class Smart extends AbstractView {
 
     prevElement = null;
 
-    this.restoreHandlers(); // восстанавливаем обработчики
+    this.restoreHandlers();
   }
 
   updateData(updatedProperty, onlyDataUpdating) {
@@ -30,7 +30,7 @@ export default class Smart extends AbstractView {
         updatedProperty
     );
 
-    if (onlyDataUpdating) { // только обновили данные, элемент не перерисовываем
+    if (onlyDataUpdating) {
       return;
     }
 

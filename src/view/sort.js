@@ -1,4 +1,4 @@
-import {SortTypes} from "../const";
+import {SortType} from "../const";
 import AbstractView from "./abstract";
 
 export default class Sort extends AbstractView {
@@ -10,9 +10,9 @@ export default class Sort extends AbstractView {
 
   createTemplate(activeSortType) {
     return `<ul class="sort">
-        <li><a href="#" class="sort__button ${SortTypes.DEFAULT === activeSortType ? `sort__button--active` : ``}" data-sort-type="default">Sort by default</a></li>
-        <li><a href="#" class="sort__button ${SortTypes.DATE === activeSortType ? `sort__button--active` : ``}" data-sort-type="date">Sort by date</a></li>
-        <li><a href="#" class="sort__button ${SortTypes.RATING === activeSortType ? `sort__button--active` : ``}" data-sort-type="rating">Sort by rating</a></li>
+        <li><a href="#" class="sort__button ${SortType.DEFAULT === activeSortType ? `sort__button--active` : ``}" data-sort-type="default">Sort by default</a></li>
+        <li><a href="#" class="sort__button ${SortType.DATE === activeSortType ? `sort__button--active` : ``}" data-sort-type="date">Sort by date</a></li>
+        <li><a href="#" class="sort__button ${SortType.RATING === activeSortType ? `sort__button--active` : ``}" data-sort-type="rating">Sort by rating</a></li>
       </ul>`
     ;
   }

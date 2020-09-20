@@ -14,14 +14,15 @@ export default class Filter {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
-    this._filterModel.addObserver(this._handleModelEvent); // подписываемся на изменение модели фильтров
-    this._filmsModel.addObserver(this._handleModelEvent); // подписываемся на изменение модели задач
+    this._filterModel.addObserver(this._handleModelEvent);
+    this._filmsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
-    this._currentFilterType = this._filterModel.getFilter(); // забираем текущий фильтр
+    this._currentFilterType = this._filterModel.getFilter();
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
+
     this._filterComponent = new FilterView(filters, this._currentFilterType);
     this._filterComponent.setFilterTypeChangeHandler(this._handleViewAction);
 
@@ -64,7 +65,7 @@ export default class Filter {
   _handleViewAction(filterType) {
     const statisticsElement = document.querySelector(`.statistic`);
 
-    if (statisticsElement && this._changeViewFromStatistics) { // если переключение со статистики
+    if (statisticsElement && this._changeViewFromStatistics) {
       this._changeViewFromStatistics();
       this._filterModel.setFilter(UpdateType.MAJOR, filterType);
       return;
@@ -74,7 +75,7 @@ export default class Filter {
       return;
     }
 
-    this._filterModel.setFilter(UpdateType.MAJOR, filterType); // перерисовываем всю доску
+    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 
   _handleModelEvent() {

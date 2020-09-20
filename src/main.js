@@ -1,4 +1,4 @@
-import {render, remove} from "./utils/render";
+import {render, remove, renderTemplate} from "./utils/render";
 import MenuView from "./view/menu";
 import StatisticsView from "./view/statistics";
 import UserProfilePresenter from "./presenter/user-profile";
@@ -16,6 +16,7 @@ const menuComponent = new MenuView();
 let statisticsComponent = null;
 const body = document.querySelector(`body`);
 const headerElement = body.querySelector(`.header`);
+const footerElement = body.querySelector(`.footer`);
 const mainElement = body.querySelector(`.main`);
 const filmListPresenter = new FilmListPresenter(mainElement, filmsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(menuComponent, filterModel, filmsModel, () => {
@@ -25,7 +26,7 @@ const filterPresenter = new FilterPresenter(menuComponent, filterModel, filmsMod
 });
 const userProfilePresenter = new UserProfilePresenter(headerElement, filmsModel);
 
-const handleSiteMenuClick = () => {
+const handleMenuStatisticsClick = () => {
   statisticsComponent = new StatisticsView(filmsModel.getFilms());
   filmListPresenter.destroy();
   render(mainElement, statisticsComponent, `beforeend`);
@@ -35,12 +36,13 @@ filterPresenter.init();
 filmListPresenter.init();
 userProfilePresenter.init();
 
-menuComponent.setMenuClickHandler(handleSiteMenuClick);
+menuComponent.setMenuStatisticsClickHandler(handleMenuStatisticsClick);
 
 api.getItems(`/movies`, FilmsModel)
   .then((films) => {
-    filmsModel.setFilms(UpdateType.INIT, films); // кладем массив фильмов в модель
+    filmsModel.setFilms(UpdateType.INIT, films);
     render(mainElement, menuComponent, `afterbegin`);
+    renderTemplate(footerElement.querySelector(`.footer__statistics`), `<p>${films.length}  movies inside</p>`, `beforeend`);
   })
   .catch(() => {
     filmsModel.setFilms(UpdateType.INIT, []);

@@ -11,7 +11,7 @@ const StatisticsDaysRange = {
 const makeItemsUniq = (items) => [...new Set(items)];
 
 const getFilmsByGenre = (films, genre) => {
-  return films.filter((film) => film.genres.includes(genre)).length; // длина массив фильмов с конкретным жанром
+  return films.filter((film) => film.genres.includes(genre)).length;
 };
 
 const getTotalDuration = (films) => {
@@ -20,7 +20,7 @@ const getTotalDuration = (films) => {
   }, 0);
 };
 
-const getListWatchedFilmsInDateRange = (films, dateFrom, dateTo) => { // фильмы по временному интервалу
+const getListWatchedFilmsInDateRange = (films, dateFrom, dateTo) => {
   return films.filter((film) => {
     if (
       moment(film.watchingDate).isSame(dateFrom) ||

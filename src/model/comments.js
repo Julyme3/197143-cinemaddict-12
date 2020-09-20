@@ -59,7 +59,7 @@ export default class Comments extends Observer {
   }
 
   static adaptToClientPostComment(data) {
-    const comment = data.comments[data.comments.length - 1]; // забираем последний комментарий из массива
+    const comment = data.comments[data.comments.length - 1];
     const adaptedComment = Object.assign(
         {},
         {

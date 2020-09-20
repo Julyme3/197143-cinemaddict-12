@@ -47,7 +47,7 @@ export default class Film {
 
     this._api.getItems(`comments/${this._film.id}`, CommentsModel)
       .then((comments) => this._commentsModel.setComments(UpdateType.INIT, comments))
-      .catch(() => this._commentsModel.setComments(UpdateType.INIT, [])); // получаем список комментариев
+      .catch(() => this._commentsModel.setComments(UpdateType.INIT, []));
 
     this._filmCardComponent.setOpenPopupHandler(this._openPopupHandler);
     this._filmCardComponent.setAddToWatchlistClickHandler(this._handleClickAddToWatchlist);
@@ -82,9 +82,9 @@ export default class Film {
 
   _closePopup() {
     removeChild(this._filmPopupComponent);
-    this._commentsPresenter.destroy();
-    this._commentsPresenter = null;
+    this._commentsPresenter.resetInputComment();
     this._mode = Mode.DEFAULT;
+
     if (this._needRerender) {
       this._handleAfterClosePopup();
       this._needRerender = false;
@@ -93,10 +93,6 @@ export default class Film {
 
   _openPopup() {
     appendChild(body, this._filmPopupComponent);
-    if (!this._commentsPresenter) {
-      this._commentsPresenter = new CommentsPresenter(this._commentsContainer, this._commentsModel);
-      this._commentsPresenter.init();
-    }
 
     this._changeMode();
     this._mode = Mode.POPUP;

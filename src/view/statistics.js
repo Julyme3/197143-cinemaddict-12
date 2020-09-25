@@ -1,4 +1,3 @@
-import {formattedDuration} from "../utils/common";
 import SmartView from "./smart";
 import {StatisticsDaysRange, makeItemsUniq, getFilmsByGenre, getListWatchedFilmsInDateRange, getTotalDuration, getTopGenre} from "../utils/statistic";
 import Chart from "chart.js";
@@ -73,12 +72,12 @@ const renderDaysChart = (statisticCtx, films) => {
 export default class Statistics extends SmartView {
   constructor(films, activeDaysRange = StatisticsDaysRange.ALL_TIME) {
     super();
-    this._films = films;
+    this._films = films.filter((film) => film.isWatched);
 
     this._dateChangeHandler = this._dateChangeHandler.bind(this);
 
     this._data = {
-      films,
+      films: this._films,
       activeDaysRange
     };
 
@@ -89,6 +88,9 @@ export default class Statistics extends SmartView {
   createTemplate(activeInput) {
     const countWatchedFilms = this._data.films.length;
     const totalDuration = countWatchedFilms ? getTotalDuration(this._data.films) : 0;
+    const totalDurationHours = Math.floor(totalDuration / 60);
+    const totalDurationMinutes = totalDuration % 60;
+
     const topGenre = countWatchedFilms ? getTopGenre(this._data.films) : ``;
 
     return `<section class="statistic">
@@ -124,7 +126,7 @@ export default class Statistics extends SmartView {
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Total duration</h4>
-          <p class="statistic__item-text">${totalDuration ? formattedDuration(totalDuration, `h[<span class="statistic__item-description">h</span>] m[<span class="statistic__item-description">m</span>]`) : `0`}</p>
+          <p class="statistic__item-text">${totalDuration ? `${totalDurationHours}<span class="statistic__item-description">h</span> ${totalDurationMinutes} <span class="statistic__item-description">m</span>` : `0`}</p>
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Top genre</h4>
@@ -172,7 +174,7 @@ export default class Statistics extends SmartView {
         films = this._films;
         break;
       case StatisticsDaysRange.TODAY:
-        films = getListWatchedFilmsInDateRange(this._films, new Date(), new Date());
+        films = getListWatchedFilmsInDateRange(this._films, new Date(), new Date(), `day`);
         break;
       case StatisticsDaysRange.WEEK:
         films = getListWatchedFilmsInDateRange(

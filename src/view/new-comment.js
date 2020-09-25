@@ -8,10 +8,10 @@ export default class NewComment extends SmartView {
     this._data = {
       emoji: null,
       message: ``,
-      isDisabled: false
     };
 
     this._selectorTextarea = `.film-details__comment-input`;
+    this._selectorEmojiInput = `.film-details__emoji-item`;
     this._isEmojiChecked = false;
 
     this._inputFormMessageHandler = this._inputFormMessageHandler.bind(this);
@@ -29,8 +29,7 @@ export default class NewComment extends SmartView {
     return EMOJI.map((emojiItem) => `<input class="film-details__emoji-item visually-hidden"
         name="comment-emoji" type="radio"
         id="emoji-${emojiItem}"
-        value="${emojiItem}" ${emojiItem === this._data.emoji ? `checked` : ``}
-        ${this._data.isDisabled ? `disabled` : ``}>
+        value="${emojiItem}" ${emojiItem === this._data.emoji ? `checked` : ``}>
         <label class="film-details__emoji-label" for="emoji-${emojiItem}">
         <img src="./images/emoji/${emojiItem}.png" width="30" height="30" alt="emoji">
       </label>`
@@ -43,7 +42,7 @@ export default class NewComment extends SmartView {
         <div for="add-emoji" class="film-details__add-emoji-label">${this._data.emoji ? this.createImgTemplate() : ``}</div>
 
         <label class="film-details__comment-label">
-          <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${this._data.isDisabled ? `disabled` : ``}></textarea>
+          <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"}></textarea>
         </label>
 
         <div class="film-details__emoji-list">
@@ -62,7 +61,7 @@ export default class NewComment extends SmartView {
   }
 
   _handleInputFormMessage() {
-    this.getElement().querySelector(this._selectorTextarea).addEventListener(`change`, this._inputFormMessageHandler);
+    this.getElement().querySelector(this._selectorTextarea).addEventListener(`input`, this._inputFormMessageHandler);
   }
 
   _inputFormMessageHandler(evt) {
@@ -83,25 +82,32 @@ export default class NewComment extends SmartView {
   }
 
   _addCommentHandler(evt) {
-    if (this._data.message === `` || !this._data.emoji) {
+
+    if (!isCtrlEnter(evt)) {
       return;
     }
 
-    if (isCtrlEnter(evt)) {
-      const newComment = Object.assign(
-          {},
-          this._data,
-          {
-            date: new Date(),
-          });
-      this._callback.commentAdd(UserAction.ADD_COMMENT, newComment);
-      this.reset();
+    if (this._data.message.trim() === `` || !this._data.emoji) {
+      return;
     }
+
+    const newComment = Object.assign(
+        {},
+        this._data,
+        {
+          date: new Date(),
+        });
+    this._callback.commentAdd(UserAction.ADD_COMMENT, newComment);
+
+    this._data = {
+      emoji: null,
+      message: ``,
+    };
   }
 
   setAddCommentHandler(callback) {
     this._callback.commentAdd = callback;
-    document.addEventListener(`keydown`, this._addCommentHandler);
+    this.getElement().querySelector(this._selectorTextarea).addEventListener(`keydown`, this._addCommentHandler);
   }
 
   _setInnerHandlers() {
@@ -128,4 +134,17 @@ export default class NewComment extends SmartView {
     this.setAddCommentHandler(this._callback.commentAdd);
   }
 
+  disableForm() {
+    this.getElement().querySelectorAll(this._selectorEmojiInput).forEach((emojiInput) => {
+      emojiInput.disabled = true;
+    });
+    this.getElement().querySelector(this._selectorTextarea).disabled = true;
+  }
+
+  enableForm() {
+    this.getElement().querySelectorAll(this._selectorEmojiInput).forEach((emojiInput) => {
+      emojiInput.disabled = false;
+    });
+    this.getElement().querySelector(this._selectorTextarea).disabled = false;
+  }
 }

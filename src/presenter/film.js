@@ -1,6 +1,6 @@
 import {render, removeChild, appendChild, remove, replace} from "../utils/render";
 import {UserAction, UpdateType, AUTHORIZATION, END_POINT} from "../const.js";
-import FilmCardView from "../view/card";
+import FilmCardView from "../view/film-card";
 import FilmPopupView from "../view/film-popup";
 import CommentsPresenter from "./comments";
 import CommentsModel from "../model/comments";
@@ -153,7 +153,8 @@ export default class Film {
         Object.assign({},
             this._film,
             {
-              isWatched: !this._film.isWatched
+              isWatched: !this._film.isWatched,
+              watchingDate: new Date()
             }
         ));
   }

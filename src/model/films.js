@@ -88,7 +88,7 @@ export default class Films extends Observer {
           "user_details": {
             "watchlist": film.isToWatchList,
             "already_watched": film.isWatched,
-            "watching_date": film.watchingDate,
+            "watching_date": film.watchingDate.toJSON(),
             "favorite": film.isFavorite
           }
         }

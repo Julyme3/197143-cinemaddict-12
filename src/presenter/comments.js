@@ -54,6 +54,7 @@ export default class Comment {
         this._api.addComment(this._film, updated)
           .then((response) => {
             this._commentsModel.addComment(response);
+            this._newCommentComponent.reset();
           })
           .catch(() => {
             this._setViewState(State.ABORTING);
@@ -89,11 +90,7 @@ export default class Comment {
 
   _setAbortingAddComment() {
     const resetCommentForm = () => {
-      this._newCommentComponent.updateData({
-        isDeleting: null,
-        isDisabled: false
-      });
-
+      this._newCommentComponent.enableForm();
       this._newCommentComponent.getElement().querySelectorAll(`img`).forEach((img) => {
         img.style.fontSize = `12px`;
       });
@@ -112,9 +109,7 @@ export default class Comment {
         });
         break;
       case State.SAVING:
-        this._newCommentComponent.updateData({
-          isDisabled: true
-        });
+        this._newCommentComponent.disableForm();
         break;
       case State.ABORTING:
         if (updated) {

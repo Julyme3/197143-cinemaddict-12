@@ -20,10 +20,10 @@ const getTotalDuration = (films) => {
   }, 0);
 };
 
-const getListWatchedFilmsInDateRange = (films, dateFrom, dateTo) => {
+const getListWatchedFilmsInDateRange = (films, dateFrom, dateTo, day) => {
   return films.filter((film) => {
     if (
-      moment(film.watchingDate).isSame(dateFrom) ||
+      moment(film.watchingDate).isSame(dateFrom, day) ||
       moment(film.watchingDate).isBetween(dateFrom, dateTo) ||
       moment(film.watchingDate).isSame(dateTo)
     ) {

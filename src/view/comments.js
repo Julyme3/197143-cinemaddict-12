@@ -40,7 +40,7 @@ export default class Comments extends SmartView {
   createCommentsTemplate(data) {
     const comments = data.comments;
     const commentTemplate = comments.map((comment) => {
-      const isDeleting = (data.isDeleting && data.isDeleting[comment.id]) ? true : false;
+      const isDeleting = data.isDeleting && data.isDeleting[comment.id];
       return this.createCommentItemTemplate(comment, isDeleting);
     }).join(``);
 

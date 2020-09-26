@@ -46,7 +46,7 @@ const removeChild = (child) => {
 
   const parent = child.parentElement;
 
-  if (parent === null || child === null) {
+  if (parent === null) {
     throw new Error(`Can't remove unexisting elements`);
   }
 
@@ -89,7 +89,7 @@ const replace = (newChild, oldChild) => {
 
   const parent = oldChild.parentElement;
 
-  if (parent === null || oldChild === null || newChild === null) {
+  if (parent === null) {
     throw new Error(`Can't replace unexisting elements`);
   }
 

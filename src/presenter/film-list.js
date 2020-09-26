@@ -204,11 +204,7 @@ export default class FilmList {
     remove(this._loadingComponent);
     this._filmListElement.innerHTML = `<h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>`;
 
-    if (resetRenderedTaskCount) {
-      this._renderedCardsCount = FILM_COUNT_GAP;
-    } else {
-      this._renderedCardsCount = Math.min(filmsCount, this._renderedCardsCount);
-    }
+    this._renderedCardsCount = resetRenderedTaskCount ? FILM_COUNT_GAP : Math.min(filmsCount, this._renderedCardsCount);
 
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;

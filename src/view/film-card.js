@@ -1,6 +1,8 @@
 import {formattedDuration, formattedDate} from "../utils/common";
 import AbstractView from "./abstract";
 
+const MAX_DESCRIPTION_LENGTH = 140;
+
 export default class FilmCard extends AbstractView {
   constructor(film) {
     super();
@@ -12,7 +14,6 @@ export default class FilmCard extends AbstractView {
   }
 
   createTemplate(film) {
-    const MAX_DESCRIPTION_LENGTH = 140;
     const {title, raiting, release, duration, poster, genres, isFavorite, isToWatchList, isWatched, comments} = film;
     let {description} = film;
     const favoriteActiveClass = isFavorite ? `film-card__controls-item--active` : ``;
@@ -55,24 +56,14 @@ export default class FilmCard extends AbstractView {
     this._callback.openPopup(evt);
   }
 
-  _addToWatchlistClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.addToWatchlistClick();
-  }
-
-  _addToWatchedClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.addToWatchedlistClick();
-  }
-
-  _addToFavoritesClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.addToFavoritesClick();
-  }
-
   setOpenPopupHandler(callback) {
     this._callback.openPopup = callback;
     this.getElement().addEventListener(`click`, this._openPopupHandler);
+  }
+
+  _addToWatchlistClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.addToWatchlistClick();
   }
 
   setAddToWatchlistClickHandler(callback) {
@@ -80,9 +71,19 @@ export default class FilmCard extends AbstractView {
     this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).addEventListener(`click`, this._addToWatchlistClickHandler);
   }
 
+  _addToWatchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.addToWatchedlistClick();
+  }
+
   setAddToWatchedClickHandler(callback) {
     this._callback.addToWatchedlistClick = callback;
     this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).addEventListener(`click`, this._addToWatchedClickHandler);
+  }
+
+  _addToFavoritesClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.addToFavoritesClick();
   }
 
   setAddToFavoritesClickHandler(callback) {

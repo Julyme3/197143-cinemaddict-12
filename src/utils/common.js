@@ -8,10 +8,7 @@ const huminazeFormattedDate = (date, format) => moment(date, format).fromNow();
 const formattedDuration = (duration, format) => moment.utc().startOf(`day`).add(duration, `minutes`).format(format);
 
 const isCtrlEnter = (evt) => {
-  if ((evt.ctrlKey || evt.metaKey) && evt.keyCode === KeyCode.ENTER) {
-    return true;
-  }
-  return false;
+  return (evt.ctrlKey || evt.metaKey) && evt.keyCode === KeyCode.ENTER;
 };
 
 export {formattedDate, formattedDuration, huminazeFormattedDate, isCtrlEnter};

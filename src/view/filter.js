@@ -9,25 +9,24 @@ export default class Filter extends AbstractView {
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
-  createItemTemplate(filter, activeFilterType) {
-    const {type, title, count} = filter;
+  createItemTemplate({type, title, count}) {
     const showCount = title !== `All movies`;
 
-    return `<a href="#watchlist" class="main-navigation__item ${type === activeFilterType ? `main-navigation__item-active` : ``}" data-filter-type="${type}">${title}
+    return `<a href="#watchlist" class="main-navigation__item ${type === this._activeFilterType ? `main-navigation__item-active` : ``}" data-filter-type="${type}">${title}
         ${showCount ? `<span class="main-navigation__item-count">${count}</span>` : ``}
       </a>`
     ;
   }
 
-  createTemplate(filters, activeFilterType) {
+  createTemplate(filters) {
     return `<div class="main-navigation__items">
-        ${filters.map((filter) => this.createItemTemplate(filter, activeFilterType)).join(``)}
+        ${filters.map((filter) => this.createItemTemplate(filter)).join(``)}
       </div>`
     ;
   }
 
   getTemplate() {
-    return this.createTemplate(this._filters, this._activeFilterType);
+    return this.createTemplate(this._filters);
   }
 
   _filterTypeChangeHandler(evt) {

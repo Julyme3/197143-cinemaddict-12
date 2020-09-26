@@ -21,16 +21,7 @@ const getTotalDuration = (films) => {
 };
 
 const getListWatchedFilmsInDateRange = (films, dateFrom, dateTo, day) => {
-  return films.filter((film) => {
-    if (
-      moment(film.watchingDate).isSame(dateFrom, day) ||
-      moment(film.watchingDate).isBetween(dateFrom, dateTo) ||
-      moment(film.watchingDate).isSame(dateTo)
-    ) {
-      return film;
-    }
-    return false;
-  });
+  return films.filter(({watchingDate}) => (moment(watchingDate).isSame(dateFrom, day) || moment(watchingDate).isBetween(dateFrom, dateTo)));
 };
 
 const getTopGenre = (films) => {
